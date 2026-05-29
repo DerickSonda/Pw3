@@ -6,6 +6,8 @@
         @csrf
         <textarea name = "nota"></textarea>
         <br>
+        <input type="color" name="cor">
+        <br>
         <input type="submit" value="Gravar">
     </form>
  @endsection

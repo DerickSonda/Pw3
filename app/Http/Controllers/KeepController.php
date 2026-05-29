@@ -24,7 +24,7 @@ class KeepController extends Controller
     public function store(Request $request) {
         Nota::create([
             'nota' => $request->input('nota'),
-            'cor'  => '#ffffff',
+            'cor'  => $request->input('cor', '#ffffff'),
         ]);
         return redirect()->route('keep.index');
     }

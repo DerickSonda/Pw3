@@ -16,6 +16,9 @@ Route:: get('/keep', [KeepController::class, 'index' ])
 Route:: get('/keep/create', [KeepController::class, 'create' ])
 ->name('keep.create');
 
+Route::post('/keep', [KeepController::class, 'store'])
+->name('keep.store');
+
 
 Route::get('/hello', function(){
     return 'Hello pessoal   ';

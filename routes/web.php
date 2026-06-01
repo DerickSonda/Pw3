@@ -19,6 +19,15 @@ Route:: get('/keep/create', [KeepController::class, 'create' ])
 Route::post('/keep', [KeepController::class, 'store'])
 ->name('keep.store');
 
+Route:: get('/keep/{nota}/edit', [KeepController::class, 'edit'])
+->name('keep.edit');
+
+Route::put('/keep/{nota}', [KeepController::class, 'update'])
+->name('keep.update');
+
+Route::delete('/keep/{nota}', [KeepController::class, 'destroy'])
+->name('keep.destroy');
+
 
 Route::get('/hello', function(){
     return 'Hello pessoal   ';

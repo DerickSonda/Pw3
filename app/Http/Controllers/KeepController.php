@@ -22,10 +22,43 @@ class KeepController extends Controller
     }
 
     public function store(Request $request) {
-        Nota::create([
-            'nota' => $request->input('nota'),
-            'cor'  => $request->input('cor', '#ffffff'),
+        $request->validate([
+            'nota' => 'required|min:5|max:255',
+            'cor'  => 'required',
         ]);
+
+        Nota::create([
+            'nota' => $request->nota,
+            'cor'  => $request->cor,
+        ]);
+
+        return redirect()->route('keep.index')
+            ->with('mensagem', 'Nota adicionada com sucesso.');
+    }
+
+    public function edit(Nota $nota) {
+        return view('keep/edit', [
+            'nota' => $nota,
+        ]);
+    }
+
+    public function update(Request $request, Nota $nota) {
+        $request->validate([
+            'nota' => 'required|min:5|max:255',
+            'cor'  => 'required',
+        ]);
+
+        $nota->update([
+            'nota' => $request->nota,
+            'cor'  => $request->cor,
+        ]);
+
+        return redirect()->route('keep.index');
+    }
+
+    public function destroy(Nota $nota) {
+        $nota->delete();
+
         return redirect()->route('keep.index');
     }
 }

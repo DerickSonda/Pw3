@@ -10,4 +10,6 @@
         <br>
         <input type="submit" value="Gravar">
     </form>
+    <br>
+    <a href="{{ route('keep.index') }}"><button>Voltar</button></a>
  @endsection

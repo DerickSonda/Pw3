@@ -1,37 +1,31 @@
 @extends('keep/_base')
+
 @section('conteudo')
+    <p>Bem-vindo ao Keepintinho!</p>
+    <div class="barra">
+        <a href="{{ route('keep.create') }}">Adicionar nota</a>
+        <a href="{{ route('keep.trash') }}">🗑️ Lixeira ({{ $lixeiraCount }})</a>
+    </div>
+    <hr>
 
-@if (session('mensagem'))
-<div id="aviso" style="color: green;">{{ session('mensagem') }}</div>
-<script>
-    setTimeout(function () {
-        document.getElementById('aviso').style.display = 'none';
-    }, 5000);
-</script>
-@endif
+    @if (session('mensagem'))
+        <div class="mensagem">👍 {{ session('mensagem') }}</div>
+    @endif
 
-<p>Bem-vindo ao Keepintinho!</p>
-<p><a href="{{ route('keep.create') }}">Adicionar nota</a></p>
-<hr>
-@foreach ($notas as $nota )
-
-
-<div class="nota" style="background-color: {{ $nota['cor'] }};">
-
-{{ $nota['nota'] }}
-
-<a href="{{ route('keep.edit', $nota['id']) }}">📑</a>
-
-<form method="post" action="{{ route('keep.destroy', $nota['id']) }}">
-    @csrf
-    @method('DELETE')
-    <button type="submit">❌</button>
-</form>
-
-<small>feito {{ $nota->created_at->locale('pt_BR')->diffForHumans() }}</small>
-</div>
-
-@endforeach
-
+    @foreach ($notas as $nota)
+        <div class="nota" style="background-color: {{ $nota['cor'] }}; color: {{ $nota['cor_texto'] }}">
+            {{ $nota['nota'] }}
+            <br><br>
+            <small style="color: {{ $nota['cor_texto'] }}; opacity: .8">
+                Criada {{ \Carbon\Carbon::parse($nota['created_at'])->locale('pt_BR')->diffForHumans() }}
+                @if (!empty($nota['updated_at']) && $nota['updated_at'] != $nota['created_at'])
+                    <br>Editada {{ \Carbon\Carbon::parse($nota['updated_at'])->locale('pt_BR')->diffForHumans() }}
+                @endif
+            </small>
+            <div class="acoes">
+                <a href="{{ route('keep.edit', $nota['id']) }}">📝</a>
+                <a href="{{ route('keep.delete', $nota['id']) }}">❌</a>
+            </div>
+        </div>
+    @endforeach
 @endsection
-

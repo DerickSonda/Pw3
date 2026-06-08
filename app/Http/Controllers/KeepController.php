@@ -12,53 +12,70 @@ class KeepController extends Controller
 
         return view('keep/index', [
             'notas' => $notas,
-    ]);
-
-    }
-
-    public function create () {
-         return view('keep/create');
-
-    }
-
-    public function store(Request $request) {
-        $request->validate([
-            'nota' => 'required|min:5|max:255',
-            'cor'  => 'required',
+            'lixeiraCount' => Nota::onlyTrashed()->count(),
         ]);
-
-        Nota::create([
-            'nota' => $request->nota,
-            'cor'  => $request->cor,
-        ]);
-
-        return redirect()->route('keep.index')
-            ->with('mensagem', 'Nota adicionada com sucesso.');
     }
 
-    public function edit(Nota $nota) {
-        return view('keep/edit', [
+    public function create(Request $request) {
+        if ($request->isMethod('post')) {
+
+            $dados = $request->validate([
+                'nota' => 'required|max:255',
+                'cor' => 'required'
+            ]);
+            
+            Nota::create($dados);
+            return redirect()->route('keep.index')->with('mensagem', 'Nota criada com sucesso.');
+        }
+
+        return view('keep/create');
+    }
+
+    public function edit(Request $request, Nota $nota) {
+        if ($request->isMethod('put')) {
+
+            $dados = $request->validate([
+                'nota' => 'required|max:255',
+                'cor' => 'required'
+            ]);
+            
+            $nota->update($dados);
+            return redirect()->route('keep.index')->with('mensagem', 'Nota atualizada com sucesso.');
+        }
+        return view('keep.create', [
             'nota' => $nota,
         ]);
     }
 
-    public function update(Request $request, Nota $nota) {
-        $request->validate([
-            'nota' => 'required|min:5|max:255',
-            'cor'  => 'required',
-        ]);
+    public function delete(Nota $nota) {
+        if (request()->isMethod('delete')) {
+            $nota->delete();
 
-        $nota->update([
-            'nota' => $request->nota,
-            'cor'  => $request->cor,
-        ]);
+            return redirect()->route('keep.index')->with('mensagem', 'Nota movida para a lixeira.');
+        }
 
-        return redirect()->route('keep.index');
+        return view('keep.delete', [
+            'nota' => $nota,
+        ]);
     }
 
-    public function destroy(Nota $nota) {
-        $nota->delete();
+    public function trash() {
+        $notas = Nota::onlyTrashed()->latest('deleted_at')->get();
 
-        return redirect()->route('keep.index');
+        return view('keep.trash', [
+            'notas' => $notas,
+        ]);
+    }
+
+    public function restore(Nota $nota) {
+        $nota->restore();
+
+        return redirect()->route('keep.trash')->with('mensagem', 'Nota restaurada com sucesso.');
+    }
+
+    public function forceDelete(Nota $nota) {
+        $nota->forceDelete();
+
+        return redirect()->route('keep.trash')->with('mensagem', 'Nota excluída definitivamente.');
     }
 }

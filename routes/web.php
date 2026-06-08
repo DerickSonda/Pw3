@@ -7,36 +7,36 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/keep', [KeepController::class, 'index'])->name('keep.index');
+
+Route::get('/keep/create', [KeepController::class, 'create'])->name('keep.create');
+
+Route::post('/keep/create', [KeepController::class, 'create']);
+
+Route::get('/keep/edit/{nota}', [KeepController::class, 'edit'])->name('keep.edit');
+
+Route::put('/keep/edit/{nota}', [KeepController::class, 'edit']);
+
+Route::get('/keep/delete/{nota}', [KeepController::class, 'delete'])->name('keep.delete');
+
+Route::delete('/keep/delete/{nota}', [KeepController::class, 'delete']);
+
+// Lixeira (notas excluídas via soft delete)
+Route::get('/keep/trash', [KeepController::class, 'trash'])->name('keep.trash');
+
+Route::put('/keep/restore/{nota}', [KeepController::class, 'restore'])->name('keep.restore')->withTrashed();
+
+Route::delete('/keep/force/{nota}', [KeepController::class, 'forceDelete'])->name('keep.forceDelete')->withTrashed();
 
 
+// Route::get('/hello', function() {
+//     return 'Hello world :-)';
+// });
 
-Route:: get('/keep', [KeepController::class, 'index' ])
-->name('keep.index');
+// Route::get('/num/{n}', function($n) {
+//     return 'Número: ' . $n;
+// });
 
-Route:: get('/keep/create', [KeepController::class, 'create' ])
-->name('keep.create');
-
-Route::post('/keep', [KeepController::class, 'store'])
-->name('keep.store');
-
-Route:: get('/keep/{nota}/edit', [KeepController::class, 'edit'])
-->name('keep.edit');
-
-Route::put('/keep/{nota}', [KeepController::class, 'update'])
-->name('keep.update');
-
-Route::delete('/keep/{nota}', [KeepController::class, 'destroy'])
-->name('keep.destroy');
-
-
-Route::get('/hello', function(){
-    return 'Hello pessoal   ';
-});
-
-Route::get('/num/{n}', function($n){
-    return 'Numero: ' . $n;
-});
-
-Route::get('/calc/{n1}/{n2}', function($n1, $n2){
-    return $n1 + $n2;
-});
+// Route::get('/calc/{n1}/{n2}', function($n1, $n2) {
+//     return $n1 + $n2;
+// });

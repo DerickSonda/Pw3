@@ -1,15 +1,28 @@
-<!-- Keep/create.blade.php-->
- @extends('keep/_base')
+<!-- keep/create.blade.php -->
+@extends('keep/_base')
 
- @section('conteudo')
-    <form method="post" action="{{ route('keep.store') }}">
+@section('conteudo')
+    @if ($errors->any())
+        <div class="erros">
+            <ul>
+                @foreach ($errors->all() as $erro)
+                    <li>{{ $erro }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form method="post" action="{{ isset($nota) ? route('keep.edit', $nota['id']) : route('keep.create') }}">
         @csrf
-        <textarea name = "nota"></textarea>
+        @if (isset($nota))
+            @method('PUT')
+        @endif
+        <textarea name="nota">{{ old('nota', $nota['nota'] ?? '') }}</textarea>
         <br>
-        <input type="color" name="cor">
+        <input type="color" name="cor" value="{{ old('cor', $nota['cor'] ?? '') }}">
         <br>
         <input type="submit" value="Gravar">
     </form>
-    <br>
-    <a href="{{ route('keep.index') }}"><button>Voltar</button></a>
- @endsection
+
+    <a href="{{ route('keep.index') }}">Cancelar</a>
+@endsection

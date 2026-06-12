@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Nota;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class KeepController extends Controller
 {
@@ -21,9 +22,14 @@ class KeepController extends Controller
 
             $dados = $request->validate([
                 'nota' => 'required|max:255',
-                'cor' => 'required'
+                'cor' => 'required',
+                'imagem' => 'nullable|image|max:2048',
             ]);
-            
+
+            if ($request->hasFile('imagem')) {
+                $dados['imagem'] = $request->file('imagem')->store('notas', 'public');
+            }
+
             Nota::create($dados);
             return redirect()->route('keep.index')->with('mensagem', 'Nota criada com sucesso.');
         }
@@ -36,9 +42,21 @@ class KeepController extends Controller
 
             $dados = $request->validate([
                 'nota' => 'required|max:255',
-                'cor' => 'required'
+                'cor' => 'required',
+                'imagem' => 'nullable|image|max:2048',
             ]);
-            
+
+            if ($request->hasFile('imagem')) {
+                // Remove a imagem antiga antes de guardar a nova
+                if ($nota->imagem) {
+                    Storage::disk('public')->delete($nota->imagem);
+                }
+                $dados['imagem'] = $request->file('imagem')->store('notas', 'public');
+            } else {
+                // Sem upload: nao sobrescreve a imagem existente
+                unset($dados['imagem']);
+            }
+
             $nota->update($dados);
             return redirect()->route('keep.index')->with('mensagem', 'Nota atualizada com sucesso.');
         }
@@ -74,6 +92,10 @@ class KeepController extends Controller
     }
 
     public function forceDelete(Nota $nota) {
+        if ($nota->imagem) {
+            Storage::disk('public')->delete($nota->imagem);
+        }
+
         $nota->forceDelete();
 
         return redirect()->route('keep.trash')->with('mensagem', 'Nota excluída definitivamente.');

@@ -14,7 +14,7 @@ class Nota extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['nota', 'cor'];
+    protected $fillable = ['nota', 'cor', 'imagem'];
 
     /**
      * Cor do texto (preto ou branco) com melhor contraste sobre a cor de fundo da nota.

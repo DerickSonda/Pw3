@@ -15,6 +15,11 @@
     @foreach ($notas as $nota)
         <div class="nota" style="background-color: {{ $nota['cor'] }}; color: {{ $nota['cor_texto'] }}">
             {{ $nota['nota'] }}
+            @if (!empty($nota['imagem']))
+                <br>
+                <img src="{{ asset('storage/' . $nota['imagem']) }}" alt=""
+                     style="max-width: 100%; border-radius: 8px; margin-top: 8px; display: block">
+            @endif
             <br><br>
             <small style="color: {{ $nota['cor_texto'] }}; opacity: .8">
                 Criada {{ \Carbon\Carbon::parse($nota['created_at'])->locale('pt_BR')->diffForHumans() }}
